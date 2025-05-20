@@ -19,11 +19,15 @@ const fakeExpenses: Expense[] = [
 ];
 
 export const expensesRoute = new Hono()
-    .get("/", (c) => {
+    .get("/", async (c) => {
+        await new Promise((r) => setTimeout(r, 3000));
         return c.json({ expenses: fakeExpenses });
     })
     .get("/total", (c) => {
-        const total = fakeExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+        const total = fakeExpenses.reduce(
+            (sum, expense) => sum + expense.amount,
+            0
+        );
         return c.json({ total });
     })
     .post("/", zValidator("json", CreateExpenseSchema), async (c) => {

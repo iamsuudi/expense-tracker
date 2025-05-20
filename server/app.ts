@@ -1,7 +1,13 @@
-import { serveStatic } from "hono/bun";
-import app from "./api-routes";
+import { Hono } from "hono";
+import { expensesRoute } from "./routes/expenses";
+import { logger } from "hono/logger";
 
-app.get("*", serveStatic({ root: "./client/dist" }));
-app.get("*", serveStatic({ path: "./client/dist/index.html" }));
+const app = new Hono();
+
+app.use("*", logger());
+
+const apiRoutes = app.basePath("/api").route("/expenses", expensesRoute);
+
+export type ApiRoutes = typeof apiRoutes;
 
 export default app;
