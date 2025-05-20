@@ -7,22 +7,18 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
+import { api } from "./lib/api";
 
 function App() {
     const [totalExpenses, setTotalExpenses] = useState(0);
 
     useEffect(() => {
-        fetch("/api/expenses/total")
-            .then(async (response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                const data: { total: number } = await response.json();
-                setTotalExpenses(data.total);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        async function fetchTotal() {
+            const res = await api.expenses.total.$get();
+            const data = await res.json();
+            setTotalExpenses(data.total);
+        }
+        fetchTotal();
     }, []);
 
     return (
